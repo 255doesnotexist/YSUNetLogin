@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32922.545
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YSUNetLogin", "YSUNetLogin\YSUNetLogin.csproj", "{5102FABD-07B4-462D-B6AA-05792BC89AED}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5102FABD-07B4-462D-B6AA-05792BC89AED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5102FABD-07B4-462D-B6AA-05792BC89AED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5102FABD-07B4-462D-B6AA-05792BC89AED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5102FABD-07B4-462D-B6AA-05792BC89AED}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F73C4274-80A1-4C49-9777-EBE6764ADC4A}
+	EndGlobalSection
+EndGlobal
