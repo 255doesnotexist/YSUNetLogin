@@ -29,9 +29,9 @@ namespace YSUNetLogin
             this.Close();
         }
 
-        private void buttonLogin_Click(object sender, EventArgs e)
+        private async void buttonLogin_Click(object sender, EventArgs e)
         {
-            var res = netLogin.Login(textBoxUsername.Text, textBoxPassword.Text, loginType);
+            var res = await netLogin.LoginAsync(textBoxUsername.Text, textBoxPassword.Text, loginType);
             listBoxMessage.Items.Add(res.Item1 ? "login succeed" : "login failed");
             listBoxMessage.Items.Add(res.Item2);
             LoginLogoutButtonSet();
@@ -117,17 +117,17 @@ namespace YSUNetLogin
             }
         }
 
-        private void buttonLogout_Click(object sender, EventArgs e)
+        private async void buttonLogout_Click(object sender, EventArgs e)
         {
-            var res = netLogin.Logout();
+            var res = await netLogin.LogoutAsync();
             listBoxMessage.Items.Add(res.Item1 ? "logout succeed" : "logout failed");
             listBoxMessage.Items.Add(res.Item2);
             LoginLogoutButtonSet();
         }
 
-        private void refreshRToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void refreshRToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var jb = netLogin.GetUserData();
+            var jb = await netLogin.GetUserDataAsync();
             LoginLogoutButtonSet();
             MessageBox.Show(string.Format("username: {0}\nuserid: {1}\nisonline: {2}", netLogin.GetUsername(), netLogin.GetUserId(), netLogin.IsNetAuthorized()));
         }

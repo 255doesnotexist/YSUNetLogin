@@ -49,6 +49,11 @@ namespace YSUNetLogin
             return isLogined;
         }
 
+        public async Task<bool> IsNetAuthorizedAsync()
+        {
+            return await Task.FromResult(IsNetAuthorized());
+        }
+
         public JObject GetUserData()
         {
             string res = CommonUtils.HttpGet("http://auth.ysu.edu.cn/eportal/InterFace.do?method=getOnlineUserInfo",
@@ -63,16 +68,28 @@ namespace YSUNetLogin
                 throw new Exception("连接失败。\n" + ex.ToString());
             }
         }
-
+        public async Task<JObject> GetUserDataAsync()
+        {
+            return await Task.FromResult(GetUserData());
+        }
         public string GetUserId()
         {
-            if (alldata == null) GetUserData();
+            if (alldata == null) alldata = GetUserData();
             return alldata.SelectToken("userId").ToObject<string>();
+        }
+
+        public async Task<string> GetUserIdAsync()
+        {
+            return await Task.FromResult(GetUserId());
         }
         public string GetUsername()
         {
             if (alldata == null) GetUserData();
             return alldata.SelectToken("userName").ToObject<string>();
+        }
+        public async Task<string> GetUsernameAsync()
+        {
+            return await Task.FromResult(GetUsername());
         }
         // public string GetPassword()
         // {
@@ -122,6 +139,11 @@ namespace YSUNetLogin
             }
         }
 
+        public async Task<ValueTuple<bool, string>> LoginAsync(string user, string password, int type)
+        {
+            return await Task.FromResult(Login(user, password, type));
+        }
+
         public ValueTuple<bool, string> Logout()
         {
             if (alldata == null)
@@ -141,6 +163,10 @@ namespace YSUNetLogin
             {
                 return (false, info);
             }
+        }
+        public async Task<ValueTuple<bool, string>> LogoutAsync()
+        {
+            return await Task.FromResult(Logout());
         }
     }
 }

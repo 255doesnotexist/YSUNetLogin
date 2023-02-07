@@ -86,14 +86,14 @@
             // saveSToolStripMenuItem
             // 
             this.saveSToolStripMenuItem.Name = "saveSToolStripMenuItem";
-            this.saveSToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.saveSToolStripMenuItem.Size = new System.Drawing.Size(231, 44);
             this.saveSToolStripMenuItem.Text = "Save(&S)";
             this.saveSToolStripMenuItem.Click += new System.EventHandler(this.saveSToolStripMenuItem_Click);
             // 
             // exitEToolStripMenuItem
             // 
             this.exitEToolStripMenuItem.Name = "exitEToolStripMenuItem";
-            this.exitEToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.exitEToolStripMenuItem.Size = new System.Drawing.Size(231, 44);
             this.exitEToolStripMenuItem.Text = "Exit(&E)";
             this.exitEToolStripMenuItem.Click += new System.EventHandler(this.exitEToolStripMenuItem_Click);
             // 
@@ -147,7 +147,7 @@
             // refreshRToolStripMenuItem
             // 
             this.refreshRToolStripMenuItem.Name = "refreshRToolStripMenuItem";
-            this.refreshRToolStripMenuItem.Size = new System.Drawing.Size(266, 44);
+            this.refreshRToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
             this.refreshRToolStripMenuItem.Text = "Refresh(&R)";
             this.refreshRToolStripMenuItem.Click += new System.EventHandler(this.refreshRToolStripMenuItem_Click);
             // 
@@ -298,7 +298,7 @@
             this.tabPageSettings.Location = new System.Drawing.Point(8, 39);
             this.tabPageSettings.Name = "tabPageSettings";
             this.tabPageSettings.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageSettings.Size = new System.Drawing.Size(947, 193);
+            this.tabPageSettings.Size = new System.Drawing.Size(947, 196);
             this.tabPageSettings.TabIndex = 1;
             this.tabPageSettings.Text = "Settings";
             this.tabPageSettings.UseVisualStyleBackColor = true;
