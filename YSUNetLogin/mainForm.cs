@@ -18,7 +18,8 @@ namespace YSUNetLogin
     public partial class MainForm : Form
     {
         private NetLogin netLogin = new NetLogin();
-        private int loginType = 0; // 0校园网、1中国移动、2中国联通、3中国电信
+        private int loginType = 0; // 0校园网、1中国移动、2中国联通、3中国电信 
+        Timer timerCheck = new Timer();
         public MainForm()
         {
             InitializeComponent();
@@ -29,20 +30,30 @@ namespace YSUNetLogin
             this.Close();
         }
 
-        private async void buttonLogin_Click(object sender, EventArgs e)
+        private async void LoginWithArgs(string un, string pw, int tp)
         {
-            var res = await netLogin.LoginAsync(textBoxUsername.Text, textBoxPassword.Text, loginType);
+            var res = await netLogin.LoginAsync(un, pw, tp);
             listBoxMessage.Items.Add(res.Item1 ? "login succeed" : "login failed");
             listBoxMessage.Items.Add(res.Item2);
             LoginLogoutButtonSet();
         }
+        private void LoginWithUserInput()
+        {
+            LoginWithArgs(textBoxUsername.Text, textBoxPassword.Text, loginType);
+            LoginLogoutButtonSet();
+        }
+        private void buttonLogin_Click(object sender, EventArgs e)
+        {
+            LoginWithUserInput();
+        }
 
         private void mainForm_Load(object sender, EventArgs e)
         {
+            JObject jb = new JObject();
             try
             {
                 StreamReader sr = new StreamReader("config.json");
-                JObject jb = JObject.Parse(sr.ReadToEnd());
+                jb = JObject.Parse(sr.ReadToEnd());
                 sr.Close();
 
                 textBoxUsername.Text = jb.SelectToken("username").ToObject<string>();
@@ -59,8 +70,32 @@ namespace YSUNetLogin
                 }
             }
 
+            try
+            {
+                textBoxCheckInterval.Text =
+                    Convert.ToString(jb.SelectToken("checkInterval").ToObject<double>());
+            }
+            catch (Exception ex)
+            {
+                timerCheck.Interval = 15000;
+            }
+
+            try
+            {
+                autoReconnectToolStripMenuItem.Checked =
+                    jb.SelectToken("autoReconnect").ToObject<bool>();
+            }
+            catch (Exception ex)
+            {
+                timerCheck.Interval = 15000;
+            }
+
             SetLoginType(loginType);
             LoginLogoutButtonSet();
+
+
+            timerCheck.Enabled = true;
+            timerCheck.Tick += timerCheck_Tick;
         }
 
         private async void SetLoginType(int type)
@@ -71,10 +106,10 @@ namespace YSUNetLogin
 
             if (needRelogin)
             {
-                string un = netLogin.GetUsername();
-                string pw = netLogin.GetPassword();
+                string un = await netLogin.GetUserIdAsync();
+                string pw = await netLogin.GetPasswordAsync();
                 netLogin.Logout();
-                await netLogin.LoginAsync(un,pw,loginType);
+                LoginWithArgs(un,pw,loginType);
             }
 
             cERNETCToolStripMenuItem.Checked = false;
@@ -153,13 +188,24 @@ namespace YSUNetLogin
             var jb = await netLogin.GetUserDataAsync();
             LoginLogoutButtonSet();
 
-            string msg = "";
+            netLogin.GetUserData();
+            Clipboard.SetText(netLogin.GetUserData().ToString());
+
+            string msg = "json data copied to clipboard\n\n";
             msg += (string.Format("username: {0}\n", netLogin.GetUsername()));
+            msg += (string.Format("userIndex: {0}\n", netLogin.GetUserIndex()));
             msg += (string.Format("userid: {0}\n", netLogin.GetUserId()));
             msg += (string.Format("userip: {0}\n", netLogin.GetUserIp()));
             msg += (string.Format("usermac: {0}\n", netLogin.GetUserMac()));
             msg += (string.Format("encrypted password: {0}\n", netLogin.GetPassword()));
-            msg += (string.Format("isonline: {0}", netLogin.IsNetAuthorized()));
+            msg += (string.Format("isonline: {0}\n\n", netLogin.IsNetAuthorized()));
+
+            BallInfo bi = new BallInfo(netLogin.GetBallInfo());
+
+            msg += (string.Format("data package plan: {0}MB\n", bi.DataPackage / 1024 / 1024));
+            msg += (string.Format("online device count: {0}\n", bi.OnlineDeviceCount));
+            msg += (string.Format("money: {0}\n", bi.Money));
+            msg += (string.Format("isp: {0}\n", bi.ISP));
 
             MessageBox.Show(msg);
         }
@@ -181,10 +227,50 @@ namespace YSUNetLogin
             jb.Add("username", textBoxUsername.Text);
             jb.Add("password", textBoxPassword.Text);
             jb.Add("loginType", loginType);
+            jb.Add("checkInterval", textBoxCheckInterval.Text);
+            jb.Add("autoReconnect", IsAutoReconnect());
 
             StreamWriter sw = new StreamWriter("config.json");
             sw.WriteLine(jb.ToString());
             sw.Close();
+        }
+
+        private void autoReconnectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            autoReconnectToolStripMenuItem.Checked = !autoReconnectToolStripMenuItem.Checked;
+        }
+
+        private bool IsAutoReconnect()
+        {
+            return autoReconnectToolStripMenuItem.Checked;
+        }
+
+        private void timerCheck_Tick(object sender, EventArgs e)
+        {
+            if (!netLogin.IsNetAuthorized())
+            { 
+                listBoxMessage.Items.Add("unexpectedly disconnected");
+                if (IsAutoReconnect())
+                {
+                    listBoxMessage.Items.Add("try auto-reconnecting");
+                    LoginWithUserInput();
+                }
+            }
+        }
+
+        private void textBoxCheckFrequency_TextChanged(object sender, EventArgs e)
+        {
+            double freqTime = 15;
+            double.TryParse(textBoxCheckInterval.Text, out freqTime);
+
+            if (freqTime >= 0.5 && freqTime <= 3600 * 24)
+            {
+                timerCheck.Interval = Convert.ToInt32(freqTime * 1000);
+            }
+            else
+            {
+                listBoxMessage.Items.Add("check interval must be in [0.5s, 24hr]");
+            }
         }
     }
 }

@@ -32,7 +32,7 @@ namespace YSUNetLogin
         private const string url = "http://auth.ysu.edu.cn/eportal/InterFace.do?method=";
         private bool isLogined = false;
         private JObject alldata = null;
-        public string userIndex = null;
+        public string userIndex = "";
         private string info = null;
 
         public bool IsNetAuthorized()
@@ -56,11 +56,19 @@ namespace YSUNetLogin
 
         public JObject GetUserData()
         {
-            string res = CommonUtils.HttpGet("http://auth.ysu.edu.cn/eportal/InterFace.do?method=getOnlineUserInfo",
-                headerStrings);
+            string[] dataStrings = new[]
+            {
+                "userIndex", userIndex
+            };
+
+            string res = CommonUtils.HttpPost("http://auth.ysu.edu.cn/eportal/InterFace.do?method=getOnlineUserInfo",
+                headerStrings, dataStrings);
             try
             { // userId: 账号、userName: 姓名、password: 密码
                 alldata = JObject.Parse(res);
+
+                userIndex = alldata.SelectToken("userIndex").ToObject<string>();
+
                 return alldata;
             }
             catch (Exception ex)
@@ -71,6 +79,16 @@ namespace YSUNetLogin
         public async Task<JObject> GetUserDataAsync()
         {
             return await Task.FromResult(GetUserData());
+        }
+        public string GetBallInfo()
+        {
+            if (alldata == null) alldata = GetUserData();
+            return alldata.SelectToken("ballInfo").ToObject<string>();
+        }
+
+        public async Task<string> GetBallInfoAsync()
+        {
+            return await Task.FromResult(GetBallInfo());
         }
         public string GetUserId()
         {
@@ -105,7 +123,7 @@ namespace YSUNetLogin
         public string GetUserIp()
         {
             if (alldata == null) GetUserData();
-            return CommonUtils.ParseQueryString(alldata.SelectToken("userIp").ToObject<string>())["password"];
+            return alldata.SelectToken("userIp").ToObject<string>();
         }
         public async Task<string> GetUserIpAsync()
         {
@@ -114,11 +132,20 @@ namespace YSUNetLogin
         public string GetUserMac()
         {
             if (alldata == null) GetUserData();
-            return CommonUtils.ParseQueryString(alldata.SelectToken("userMac").ToObject<string>())["password"];
+            return alldata.SelectToken("userMac").ToObject<string>();
         }
         public async Task<string> GetUserMacAsync()
         {
             return await Task.FromResult(GetUserMac());
+        }
+        public string GetUserIndex()
+        {
+            if (alldata == null) GetUserData();
+            return alldata.SelectToken("userIndex").ToObject<string>();
+        }
+        public async Task<string> GetUserIndexAsync()
+        {
+            return await Task.FromResult(GetUserIndex());
         }
 
         public ValueTuple<bool, string> Login(string user, string password, int type)

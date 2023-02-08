@@ -39,7 +39,7 @@ namespace YSUNetLogin
             }
 
             HttpResponseMessage response = httpClient.PostAsync(new Uri(url), new FormUrlEncodedContent(paramList)).Result;
-            String result = response.Content.ReadAsStringAsync().Result;
+            String result =response.Content.ReadAsStringAsync().Result;
             return result;
         }
 
