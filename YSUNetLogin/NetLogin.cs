@@ -91,11 +91,35 @@ namespace YSUNetLogin
         {
             return await Task.FromResult(GetUsername());
         }
-        // public string GetPassword()
-        // {
-        //     if (alldata == null) GetUserData();
-        //     return alldata.SelectToken("password").ToObject<string>();
-        // }
+
+        public string GetPassword()
+        {
+            if (alldata == null) GetUserData();
+            return CommonUtils.ParseQueryString(alldata.SelectToken("selfUrl").ToObject<string>())["password"];
+        }
+        public async Task<string> GetPasswordAsync()
+        {
+            return await Task.FromResult(GetPassword());
+        }
+
+        public string GetUserIp()
+        {
+            if (alldata == null) GetUserData();
+            return CommonUtils.ParseQueryString(alldata.SelectToken("userIp").ToObject<string>())["password"];
+        }
+        public async Task<string> GetUserIpAsync()
+        {
+            return await Task.FromResult(GetUserIp());
+        }
+        public string GetUserMac()
+        {
+            if (alldata == null) GetUserData();
+            return CommonUtils.ParseQueryString(alldata.SelectToken("userMac").ToObject<string>())["password"];
+        }
+        public async Task<string> GetUserMacAsync()
+        {
+            return await Task.FromResult(GetUserMac());
+        }
 
         public ValueTuple<bool, string> Login(string user, string password, int type)
         {

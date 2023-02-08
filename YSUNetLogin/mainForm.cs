@@ -39,21 +39,44 @@ namespace YSUNetLogin
 
         private void mainForm_Load(object sender, EventArgs e)
         {
-            StreamReader sr = new StreamReader("config.json");
-            JObject jb = JObject.Parse(sr.ReadToEnd());
-            sr.Close();
+            try
+            {
+                StreamReader sr = new StreamReader("config.json");
+                JObject jb = JObject.Parse(sr.ReadToEnd());
+                sr.Close();
 
-            textBoxUsername.Text = jb.SelectToken("username").ToObject<string>();
-            textBoxPassword.Text = jb.SelectToken("password").ToObject<string>();
-            loginType = jb.SelectToken("loginType").ToObject<int>();
+                textBoxUsername.Text = jb.SelectToken("username").ToObject<string>();
+                textBoxPassword.Text = jb.SelectToken("password").ToObject<string>();
+                loginType = jb.SelectToken("loginType").ToObject<int>();
+            }
+            catch (Exception ex)
+            {
+                // 无配置
+                if (netLogin.IsNetAuthorized())
+                {
+                    textBoxUsername.Text = netLogin.GetUserId();
+                    textBoxPassword.Text = netLogin.GetPassword();
+                }
+            }
 
             SetLoginType(loginType);
             LoginLogoutButtonSet();
         }
 
-        private void SetLoginType(int type)
+        private async void SetLoginType(int type)
         {
+            bool needRelogin = (type != loginType);
+
             loginType = type;
+
+            if (needRelogin)
+            {
+                string un = netLogin.GetUsername();
+                string pw = netLogin.GetPassword();
+                netLogin.Logout();
+                await netLogin.LoginAsync(un,pw,loginType);
+            }
+
             cERNETCToolStripMenuItem.Checked = false;
             chinaMobileMToolStripMenuItem.Checked = false;
             chinaUnicomUToolStripMenuItem.Checked = false;
@@ -103,9 +126,9 @@ namespace YSUNetLogin
             SetLoginType(3);
         }
 
-        private void LoginLogoutButtonSet()
+        private async void LoginLogoutButtonSet()
         {
-            if (netLogin.IsNetAuthorized())
+            if (await netLogin.IsNetAuthorizedAsync())
             {
                 buttonLogin.Enabled = false;
                 buttonLogout.Enabled = true;
@@ -129,7 +152,16 @@ namespace YSUNetLogin
         {
             var jb = await netLogin.GetUserDataAsync();
             LoginLogoutButtonSet();
-            MessageBox.Show(string.Format("username: {0}\nuserid: {1}\nisonline: {2}", netLogin.GetUsername(), netLogin.GetUserId(), netLogin.IsNetAuthorized()));
+
+            string msg = "";
+            msg += (string.Format("username: {0}\n", netLogin.GetUsername()));
+            msg += (string.Format("userid: {0}\n", netLogin.GetUserId()));
+            msg += (string.Format("userip: {0}\n", netLogin.GetUserIp()));
+            msg += (string.Format("usermac: {0}\n", netLogin.GetUserMac()));
+            msg += (string.Format("encrypted password: {0}\n", netLogin.GetPassword()));
+            msg += (string.Format("isonline: {0}", netLogin.IsNetAuthorized()));
+
+            MessageBox.Show(msg);
         }
 
         private void licenseSToolStripMenuItem_Click(object sender, EventArgs e)
