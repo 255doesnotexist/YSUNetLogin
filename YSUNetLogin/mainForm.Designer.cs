@@ -39,6 +39,7 @@
             this.chinaTelecomTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tokenTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.refreshRToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.autoReconnectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutAToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.licenseSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutAToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -56,7 +57,6 @@
             this.tableLayoutSettings = new System.Windows.Forms.TableLayoutPanel();
             this.labelCheckFrequency = new System.Windows.Forms.Label();
             this.textBoxCheckInterval = new System.Windows.Forms.TextBox();
-            this.autoReconnectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStripMain.SuspendLayout();
             this.tabControlMain.SuspendLayout();
             this.tabPageLogin.SuspendLayout();
@@ -92,14 +92,14 @@
             // saveSToolStripMenuItem
             // 
             this.saveSToolStripMenuItem.Name = "saveSToolStripMenuItem";
-            this.saveSToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.saveSToolStripMenuItem.Size = new System.Drawing.Size(231, 44);
             this.saveSToolStripMenuItem.Text = "Save(&S)";
             this.saveSToolStripMenuItem.Click += new System.EventHandler(this.saveSToolStripMenuItem_Click);
             // 
             // exitEToolStripMenuItem
             // 
             this.exitEToolStripMenuItem.Name = "exitEToolStripMenuItem";
-            this.exitEToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.exitEToolStripMenuItem.Size = new System.Drawing.Size(231, 44);
             this.exitEToolStripMenuItem.Text = "Exit(&E)";
             this.exitEToolStripMenuItem.Click += new System.EventHandler(this.exitEToolStripMenuItem_Click);
             // 
@@ -117,28 +117,28 @@
             // cERNETCToolStripMenuItem
             // 
             this.cERNETCToolStripMenuItem.Name = "cERNETCToolStripMenuItem";
-            this.cERNETCToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.cERNETCToolStripMenuItem.Size = new System.Drawing.Size(346, 44);
             this.cERNETCToolStripMenuItem.Text = "CERNET(&C)";
             this.cERNETCToolStripMenuItem.Click += new System.EventHandler(this.cERNETCToolStripMenuItem_Click);
             // 
             // chinaMobileMToolStripMenuItem
             // 
             this.chinaMobileMToolStripMenuItem.Name = "chinaMobileMToolStripMenuItem";
-            this.chinaMobileMToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.chinaMobileMToolStripMenuItem.Size = new System.Drawing.Size(346, 44);
             this.chinaMobileMToolStripMenuItem.Text = "China Mobile(&M)";
             this.chinaMobileMToolStripMenuItem.Click += new System.EventHandler(this.chinaMobileMToolStripMenuItem_Click);
             // 
             // chinaUnicomUToolStripMenuItem
             // 
             this.chinaUnicomUToolStripMenuItem.Name = "chinaUnicomUToolStripMenuItem";
-            this.chinaUnicomUToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.chinaUnicomUToolStripMenuItem.Size = new System.Drawing.Size(346, 44);
             this.chinaUnicomUToolStripMenuItem.Text = "China Unicom(&U)";
             this.chinaUnicomUToolStripMenuItem.Click += new System.EventHandler(this.chinaUnicomUToolStripMenuItem_Click);
             // 
             // chinaTelecomTToolStripMenuItem
             // 
             this.chinaTelecomTToolStripMenuItem.Name = "chinaTelecomTToolStripMenuItem";
-            this.chinaTelecomTToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.chinaTelecomTToolStripMenuItem.Size = new System.Drawing.Size(346, 44);
             this.chinaTelecomTToolStripMenuItem.Text = "China Telecom(&T)";
             this.chinaTelecomTToolStripMenuItem.Click += new System.EventHandler(this.chinaTelecomTToolStripMenuItem_Click);
             // 
@@ -148,7 +148,7 @@
             this.refreshRToolStripMenuItem,
             this.autoReconnectToolStripMenuItem});
             this.tokenTToolStripMenuItem.Name = "tokenTToolStripMenuItem";
-            this.tokenTToolStripMenuItem.Size = new System.Drawing.Size(135, 38);
+            this.tokenTToolStripMenuItem.Size = new System.Drawing.Size(135, 35);
             this.tokenTToolStripMenuItem.Text = "Token(&T)";
             // 
             // refreshRToolStripMenuItem
@@ -157,6 +157,13 @@
             this.refreshRToolStripMenuItem.Size = new System.Drawing.Size(364, 44);
             this.refreshRToolStripMenuItem.Text = "Refresh Status(&S)";
             this.refreshRToolStripMenuItem.Click += new System.EventHandler(this.refreshRToolStripMenuItem_Click);
+            // 
+            // autoReconnectToolStripMenuItem
+            // 
+            this.autoReconnectToolStripMenuItem.Name = "autoReconnectToolStripMenuItem";
+            this.autoReconnectToolStripMenuItem.Size = new System.Drawing.Size(364, 44);
+            this.autoReconnectToolStripMenuItem.Text = "Auto Reconnect(&R)";
+            this.autoReconnectToolStripMenuItem.Click += new System.EventHandler(this.autoReconnectToolStripMenuItem_Click);
             // 
             // aboutAToolStripMenuItem
             // 
@@ -170,14 +177,14 @@
             // licenseSToolStripMenuItem
             // 
             this.licenseSToolStripMenuItem.Name = "licenseSToolStripMenuItem";
-            this.licenseSToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.licenseSToolStripMenuItem.Size = new System.Drawing.Size(269, 44);
             this.licenseSToolStripMenuItem.Text = "License(&S)";
             this.licenseSToolStripMenuItem.Click += new System.EventHandler(this.licenseSToolStripMenuItem_Click);
             // 
             // aboutAToolStripMenuItem1
             // 
             this.aboutAToolStripMenuItem1.Name = "aboutAToolStripMenuItem1";
-            this.aboutAToolStripMenuItem1.Size = new System.Drawing.Size(359, 44);
+            this.aboutAToolStripMenuItem1.Size = new System.Drawing.Size(269, 44);
             this.aboutAToolStripMenuItem1.Text = "About...(&A)";
             this.aboutAToolStripMenuItem1.Click += new System.EventHandler(this.aboutAToolStripMenuItem1_Click);
             // 
@@ -189,7 +196,7 @@
             this.tabControlMain.Location = new System.Drawing.Point(0, 39);
             this.tabControlMain.Name = "tabControlMain";
             this.tabControlMain.SelectedIndex = 0;
-            this.tabControlMain.Size = new System.Drawing.Size(963, 243);
+            this.tabControlMain.Size = new System.Drawing.Size(963, 287);
             this.tabControlMain.TabIndex = 1;
             // 
             // tabPageLogin
@@ -198,7 +205,7 @@
             this.tabPageLogin.Location = new System.Drawing.Point(8, 39);
             this.tabPageLogin.Name = "tabPageLogin";
             this.tabPageLogin.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageLogin.Size = new System.Drawing.Size(947, 196);
+            this.tabPageLogin.Size = new System.Drawing.Size(947, 240);
             this.tabPageLogin.TabIndex = 0;
             this.tabPageLogin.Text = "Login";
             this.tabPageLogin.UseVisualStyleBackColor = true;
@@ -220,11 +227,12 @@
             this.tableLayoutPanelLogin.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanelLogin.Location = new System.Drawing.Point(3, 3);
             this.tableLayoutPanelLogin.Name = "tableLayoutPanelLogin";
-            this.tableLayoutPanelLogin.RowCount = 3;
-            this.tableLayoutPanelLogin.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanelLogin.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanelLogin.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanelLogin.Size = new System.Drawing.Size(941, 190);
+            this.tableLayoutPanelLogin.RowCount = 4;
+            this.tableLayoutPanelLogin.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
+            this.tableLayoutPanelLogin.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
+            this.tableLayoutPanelLogin.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 80F));
+            this.tableLayoutPanelLogin.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanelLogin.Size = new System.Drawing.Size(941, 234);
             this.tableLayoutPanelLogin.TabIndex = 0;
             // 
             // labelUsername
@@ -233,7 +241,7 @@
             this.labelUsername.Dock = System.Windows.Forms.DockStyle.Fill;
             this.labelUsername.Location = new System.Drawing.Point(3, 0);
             this.labelUsername.Name = "labelUsername";
-            this.labelUsername.Size = new System.Drawing.Size(114, 63);
+            this.labelUsername.Size = new System.Drawing.Size(114, 60);
             this.labelUsername.TabIndex = 0;
             this.labelUsername.Text = "Username";
             this.labelUsername.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -242,9 +250,9 @@
             // 
             this.labelPassword.AutoSize = true;
             this.labelPassword.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelPassword.Location = new System.Drawing.Point(3, 63);
+            this.labelPassword.Location = new System.Drawing.Point(3, 60);
             this.labelPassword.Name = "labelPassword";
-            this.labelPassword.Size = new System.Drawing.Size(114, 63);
+            this.labelPassword.Size = new System.Drawing.Size(114, 60);
             this.labelPassword.TabIndex = 1;
             this.labelPassword.Text = "Password";
             this.labelPassword.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -262,7 +270,7 @@
             // 
             this.tableLayoutPanelLogin.SetColumnSpan(this.textBoxPassword, 2);
             this.textBoxPassword.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBoxPassword.Location = new System.Drawing.Point(123, 66);
+            this.textBoxPassword.Location = new System.Drawing.Point(123, 63);
             this.textBoxPassword.Name = "textBoxPassword";
             this.textBoxPassword.Size = new System.Drawing.Size(322, 35);
             this.textBoxPassword.TabIndex = 3;
@@ -270,9 +278,9 @@
             // buttonLogin
             // 
             this.buttonLogin.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.buttonLogin.Location = new System.Drawing.Point(123, 129);
+            this.buttonLogin.Location = new System.Drawing.Point(123, 123);
             this.buttonLogin.Name = "buttonLogin";
-            this.buttonLogin.Size = new System.Drawing.Size(158, 58);
+            this.buttonLogin.Size = new System.Drawing.Size(158, 74);
             this.buttonLogin.TabIndex = 4;
             this.buttonLogin.Text = "Login";
             this.buttonLogin.UseVisualStyleBackColor = true;
@@ -285,16 +293,16 @@
             this.listBoxMessage.ItemHeight = 24;
             this.listBoxMessage.Location = new System.Drawing.Point(451, 3);
             this.listBoxMessage.Name = "listBoxMessage";
-            this.tableLayoutPanelLogin.SetRowSpan(this.listBoxMessage, 3);
-            this.listBoxMessage.Size = new System.Drawing.Size(487, 184);
+            this.tableLayoutPanelLogin.SetRowSpan(this.listBoxMessage, 4);
+            this.listBoxMessage.Size = new System.Drawing.Size(487, 228);
             this.listBoxMessage.TabIndex = 5;
             // 
             // buttonLogout
             // 
             this.buttonLogout.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.buttonLogout.Location = new System.Drawing.Point(287, 129);
+            this.buttonLogout.Location = new System.Drawing.Point(287, 123);
             this.buttonLogout.Name = "buttonLogout";
-            this.buttonLogout.Size = new System.Drawing.Size(158, 58);
+            this.buttonLogout.Size = new System.Drawing.Size(158, 74);
             this.buttonLogout.TabIndex = 6;
             this.buttonLogout.Text = "Logout";
             this.buttonLogout.UseVisualStyleBackColor = true;
@@ -348,18 +356,11 @@
             this.textBoxCheckInterval.Text = "15";
             this.textBoxCheckInterval.TextChanged += new System.EventHandler(this.textBoxCheckFrequency_TextChanged);
             // 
-            // autoReconnectToolStripMenuItem
-            // 
-            this.autoReconnectToolStripMenuItem.Name = "autoReconnectToolStripMenuItem";
-            this.autoReconnectToolStripMenuItem.Size = new System.Drawing.Size(364, 44);
-            this.autoReconnectToolStripMenuItem.Text = "Auto Reconnect(&R)";
-            this.autoReconnectToolStripMenuItem.Click += new System.EventHandler(this.autoReconnectToolStripMenuItem_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(963, 282);
+            this.ClientSize = new System.Drawing.Size(963, 326);
             this.Controls.Add(this.tabControlMain);
             this.Controls.Add(this.menuStripMain);
             this.MainMenuStrip = this.menuStripMain;

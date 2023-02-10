@@ -95,6 +95,7 @@
     </Compile>
     <Compile Include="BallInfo.cs" />
     <Compile Include="CommonUtils.cs" />
+    <Compile Include="ListLogger.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

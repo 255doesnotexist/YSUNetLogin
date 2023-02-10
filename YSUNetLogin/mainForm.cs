@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Configuration;
 using System.IO;
+using System.Runtime.CompilerServices;
 using Newtonsoft.Json.Linq;
 
 namespace YSUNetLogin
@@ -20,9 +21,11 @@ namespace YSUNetLogin
         private NetLogin netLogin = new NetLogin();
         private int loginType = 0; // 0校园网、1中国移动、2中国联通、3中国电信 
         Timer timerCheck = new Timer();
+        private ListLogger logger = null;
         public MainForm()
         {
             InitializeComponent();
+            logger = new ListLogger(listBoxMessage);
         }
 
         private void exitEToolStripMenuItem_Click(object sender, EventArgs e)
@@ -33,8 +36,17 @@ namespace YSUNetLogin
         private async void LoginWithArgs(string un, string pw, int tp)
         {
             var res = await netLogin.LoginAsync(un, pw, tp);
-            listBoxMessage.Items.Add(res.Item1 ? "login succeed" : "login failed");
-            listBoxMessage.Items.Add(res.Item2);
+            logger.InfoLog(res.Item1 ? "login succeed" : "login failed");
+
+            if (res.Item1)
+            {
+                logger.InfoLog(res.Item2);
+            }
+            else
+            {
+                logger.ErrorLog(res.Item2);
+            }
+
             LoginLogoutButtonSet();
         }
         private void LoginWithUserInput()
@@ -178,8 +190,18 @@ namespace YSUNetLogin
         private async void buttonLogout_Click(object sender, EventArgs e)
         {
             var res = await netLogin.LogoutAsync();
-            listBoxMessage.Items.Add(res.Item1 ? "logout succeed" : "logout failed");
-            listBoxMessage.Items.Add(res.Item2);
+
+            logger.InfoLog(res.Item1 ? "logout succeed" : "logout failed");
+
+            if (res.Item1)
+            {
+                logger.InfoLog(res.Item2);
+            }
+            else
+            {
+                logger.ErrorLog(res.Item2);
+            }
+
             LoginLogoutButtonSet();
         }
 
@@ -248,11 +270,11 @@ namespace YSUNetLogin
         private void timerCheck_Tick(object sender, EventArgs e)
         {
             if (!netLogin.IsNetAuthorized())
-            { 
-                listBoxMessage.Items.Add("unexpectedly disconnected");
+            {
+                logger.WarnLog("unexpectedly disconnected");
                 if (IsAutoReconnect())
                 {
-                    listBoxMessage.Items.Add("try auto-reconnecting");
+                    logger.InfoLog("try auto-reconnecting");
                     LoginWithUserInput();
                 }
             }
@@ -269,7 +291,7 @@ namespace YSUNetLogin
             }
             else
             {
-                listBoxMessage.Items.Add("check interval must be in [0.5s, 24hr]");
+                logger.ErrorLog("check interval must be in [0.5s, 24hr]");
             }
         }
     }
