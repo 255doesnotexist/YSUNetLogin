@@ -57,6 +57,8 @@
             this.tableLayoutSettings = new System.Windows.Forms.TableLayoutPanel();
             this.labelCheckFrequency = new System.Windows.Forms.Label();
             this.textBoxCheckInterval = new System.Windows.Forms.TextBox();
+            this.labelHttpTimeout = new System.Windows.Forms.Label();
+            this.textBoxHttpTimeout = new System.Windows.Forms.TextBox();
             this.menuStripMain.SuspendLayout();
             this.tabControlMain.SuspendLayout();
             this.tabPageLogin.SuspendLayout();
@@ -314,7 +316,7 @@
             this.tabPageSettings.Location = new System.Drawing.Point(8, 39);
             this.tabPageSettings.Name = "tabPageSettings";
             this.tabPageSettings.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageSettings.Size = new System.Drawing.Size(947, 196);
+            this.tabPageSettings.Size = new System.Drawing.Size(947, 240);
             this.tabPageSettings.TabIndex = 1;
             this.tabPageSettings.Text = "Settings";
             this.tabPageSettings.UseVisualStyleBackColor = true;
@@ -324,15 +326,17 @@
             this.tableLayoutSettings.ColumnCount = 2;
             this.tableLayoutSettings.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 360F));
             this.tableLayoutSettings.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutSettings.Controls.Add(this.labelHttpTimeout, 0, 1);
             this.tableLayoutSettings.Controls.Add(this.labelCheckFrequency, 0, 0);
             this.tableLayoutSettings.Controls.Add(this.textBoxCheckInterval, 1, 0);
+            this.tableLayoutSettings.Controls.Add(this.textBoxHttpTimeout, 1, 1);
             this.tableLayoutSettings.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutSettings.Location = new System.Drawing.Point(3, 3);
             this.tableLayoutSettings.Name = "tableLayoutSettings";
             this.tableLayoutSettings.RowCount = 2;
             this.tableLayoutSettings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
             this.tableLayoutSettings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
-            this.tableLayoutSettings.Size = new System.Drawing.Size(941, 190);
+            this.tableLayoutSettings.Size = new System.Drawing.Size(941, 234);
             this.tableLayoutSettings.TabIndex = 0;
             // 
             // labelCheckFrequency
@@ -355,6 +359,27 @@
             this.textBoxCheckInterval.TabIndex = 1;
             this.textBoxCheckInterval.Text = "15";
             this.textBoxCheckInterval.TextChanged += new System.EventHandler(this.textBoxCheckFrequency_TextChanged);
+            // 
+            // labelHttpTimeout
+            // 
+            this.labelHttpTimeout.AutoSize = true;
+            this.labelHttpTimeout.Dock = System.Windows.Forms.DockStyle.Right;
+            this.labelHttpTimeout.Location = new System.Drawing.Point(47, 60);
+            this.labelHttpTimeout.Name = "labelHttpTimeout";
+            this.labelHttpTimeout.Size = new System.Drawing.Size(310, 174);
+            this.labelHttpTimeout.TabIndex = 2;
+            this.labelHttpTimeout.Text = "Http Client Timeout (sec)";
+            // 
+            // textBoxHttpTimeout
+            // 
+            this.textBoxHttpTimeout.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxHttpTimeout.Location = new System.Drawing.Point(363, 63);
+            this.textBoxHttpTimeout.Name = "textBoxHttpTimeout";
+            this.textBoxHttpTimeout.Size = new System.Drawing.Size(575, 35);
+            this.textBoxHttpTimeout.TabIndex = 3;
+            this.textBoxHttpTimeout.Text = "0.05";
+            this.textBoxHttpTimeout.TextChanged += new System.EventHandler(this.textBoxHttpTimeout_TextChanged);
             // 
             // MainForm
             // 
@@ -412,6 +437,8 @@
         private System.Windows.Forms.Label labelCheckFrequency;
         private System.Windows.Forms.TextBox textBoxCheckInterval;
         private System.Windows.Forms.ToolStripMenuItem autoReconnectToolStripMenuItem;
+        private System.Windows.Forms.Label labelHttpTimeout;
+        private System.Windows.Forms.TextBox textBoxHttpTimeout;
     }
 }
 

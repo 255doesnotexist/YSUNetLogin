@@ -10,9 +10,11 @@ namespace YSUNetLogin
 {
     internal static class CommonUtils
     {
+        public static TimeSpan HttpClientTimeout;
         public static string HttpGet(string url, string[] headers)
         {
             HttpClient httpClient = new HttpClient();
+            httpClient.Timeout = HttpClientTimeout;
 
             for (int i = 0; i < headers.Length; i += 2)
             {
@@ -26,6 +28,7 @@ namespace YSUNetLogin
         public static string HttpPost(string url, string[] headers, string[] data)
         {
             HttpClient httpClient = new HttpClient();
+            httpClient.Timeout = HttpClientTimeout;
 
             for (int i = 0; i < headers.Length; i += 2)
             {

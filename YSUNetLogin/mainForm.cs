@@ -35,19 +35,26 @@ namespace YSUNetLogin
 
         private async void LoginWithArgs(string un, string pw, int tp)
         {
-            var res = await netLogin.LoginAsync(un, pw, tp);
-            logger.InfoLog(res.Item1 ? "login succeed" : "login failed");
-
-            if (res.Item1)
+            try
             {
-                logger.InfoLog(res.Item2);
-            }
-            else
-            {
-                logger.ErrorLog(res.Item2);
-            }
+                var res = await netLogin.LoginAsync(un, pw, tp);
+                logger.InfoLog(res.Item1 ? "login succeed" : "login failed");
 
-            LoginLogoutButtonSet();
+                if (res.Item1)
+                {
+                    logger.InfoLog(res.Item2);
+                }
+                else
+                {
+                    logger.ErrorLog(res.Item2);
+                }
+
+                LoginLogoutButtonSet();
+            }
+            catch (Exception ex)
+            {
+                logger.FatalLog(ex.Message);
+            }
         }
         private void LoginWithUserInput()
         {
@@ -84,6 +91,7 @@ namespace YSUNetLogin
 
             try
             {
+                textBoxCheckInterval.Text = int.MinValue.ToString();
                 textBoxCheckInterval.Text =
                     Convert.ToString(jb.SelectToken("checkInterval").ToObject<double>());
             }
@@ -99,15 +107,25 @@ namespace YSUNetLogin
             }
             catch (Exception ex)
             {
-                timerCheck.Interval = 15000;
+                autoReconnectToolStripMenuItem.Checked = false;
+            }
+
+            try
+            {
+                CommonUtils.HttpClientTimeout =
+                    TimeSpan.FromSeconds(jb.SelectToken("httpTimeout").ToObject<double>());
+            }
+            catch (Exception ex)
+            {
+                CommonUtils.HttpClientTimeout =
+                    TimeSpan.FromSeconds(Convert.ToDouble(textBoxHttpTimeout.Text));
             }
 
             SetLoginType(loginType);
             LoginLogoutButtonSet();
-
-
-            timerCheck.Enabled = true;
+            
             timerCheck.Tick += timerCheck_Tick;
+            timerCheck.Start();
         }
 
         private async void SetLoginType(int type)
@@ -175,59 +193,82 @@ namespace YSUNetLogin
 
         private async void LoginLogoutButtonSet()
         {
-            if (await netLogin.IsNetAuthorizedAsync())
+            try
             {
-                buttonLogin.Enabled = false;
-                buttonLogout.Enabled = true;
+                if (await netLogin.IsNetAuthorizedAsync())
+                {
+                    buttonLogin.Enabled = false;
+                    buttonLogout.Enabled = true;
+                }
+                else
+                {
+                    buttonLogin.Enabled = true;
+                    buttonLogout.Enabled = false;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                buttonLogin.Enabled = true;
-                buttonLogout.Enabled = false;
+                logger.FatalLog(ex.Message);
             }
         }
 
         private async void buttonLogout_Click(object sender, EventArgs e)
         {
-            var res = await netLogin.LogoutAsync();
-
-            logger.InfoLog(res.Item1 ? "logout succeed" : "logout failed");
-
-            if (res.Item1)
+            try
             {
-                logger.InfoLog(res.Item2);
-            }
-            else
-            {
-                logger.ErrorLog(res.Item2);
-            }
+                var res = await netLogin.LogoutAsync();
 
-            LoginLogoutButtonSet();
+                logger.InfoLog(res.Item1 ? "logout succeed" : "logout failed");
+
+                if (res.Item1)
+                {
+                    logger.InfoLog(res.Item2);
+                }
+                else
+                {
+                    logger.ErrorLog(res.Item2);
+                }
+
+                LoginLogoutButtonSet();
+            }
+            catch (Exception ex)
+            {
+                logger.FatalLog(ex.Message);
+            }
         }
 
         private async void refreshRToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var jb = await netLogin.GetUserDataAsync();
-            LoginLogoutButtonSet();
+            string msg = "";
+            try
+            {
+                var jb = await netLogin.GetUserDataAsync();
+                LoginLogoutButtonSet();
 
-            netLogin.GetUserData();
-            Clipboard.SetText(netLogin.GetUserData().ToString());
+                netLogin.GetUserData();
+                Clipboard.SetText(netLogin.GetUserData().ToString());
 
-            string msg = "json data copied to clipboard\n\n";
-            msg += (string.Format("username: {0}\n", netLogin.GetUsername()));
-            msg += (string.Format("userIndex: {0}\n", netLogin.GetUserIndex()));
-            msg += (string.Format("userid: {0}\n", netLogin.GetUserId()));
-            msg += (string.Format("userip: {0}\n", netLogin.GetUserIp()));
-            msg += (string.Format("usermac: {0}\n", netLogin.GetUserMac()));
-            msg += (string.Format("encrypted password: {0}\n", netLogin.GetPassword()));
-            msg += (string.Format("isonline: {0}\n\n", netLogin.IsNetAuthorized()));
+                msg = "json data copied to clipboard\n\n";
+                msg += (string.Format("username: {0}\n", netLogin.GetUsername()));
+                msg += (string.Format("userIndex: {0}\n", netLogin.GetUserIndex()));
+                msg += (string.Format("userid: {0}\n", netLogin.GetUserId()));
+                msg += (string.Format("userip: {0}\n", netLogin.GetUserIp()));
+                msg += (string.Format("usermac: {0}\n", netLogin.GetUserMac()));
+                msg += (string.Format("encrypted password: {0}\n", netLogin.GetPassword()));
+                msg += (string.Format("isonline: {0}\n\n", netLogin.IsNetAuthorized()));
 
-            BallInfo bi = new BallInfo(netLogin.GetBallInfo());
+                BallInfo bi = new BallInfo(netLogin.GetBallInfo());
 
-            msg += (string.Format("data package plan: {0}MB\n", bi.DataPackage / 1024 / 1024));
-            msg += (string.Format("online device count: {0}\n", bi.OnlineDeviceCount));
-            msg += (string.Format("money: {0}\n", bi.Money));
-            msg += (string.Format("isp: {0}\n", bi.ISP));
+                msg += (string.Format("data package plan: {0}MB\n", bi.DataPackage / 1024 / 1024));
+                msg += (string.Format("online device count: {0}\n", bi.OnlineDeviceCount));
+                msg += (string.Format("money: {0}\n", bi.Money));
+                msg += (string.Format("isp: {0}\n", bi.ISP));
+            }
+            catch (Exception ex)
+            {
+                msg = "cannot connect to auth server\n\n";
+                msg += ex.ToString();
+            }
 
             MessageBox.Show(msg);
         }
@@ -251,6 +292,7 @@ namespace YSUNetLogin
             jb.Add("loginType", loginType);
             jb.Add("checkInterval", textBoxCheckInterval.Text);
             jb.Add("autoReconnect", IsAutoReconnect());
+            jb.Add("httpTimeout", CommonUtils.HttpClientTimeout);
 
             StreamWriter sw = new StreamWriter("config.json");
             sw.WriteLine(jb.ToString());
@@ -267,16 +309,33 @@ namespace YSUNetLogin
             return autoReconnectToolStripMenuItem.Checked;
         }
 
+        private DateTime lastTimerErrorTime = DateTime.MinValue;
         private void timerCheck_Tick(object sender, EventArgs e)
         {
-            if (!netLogin.IsNetAuthorized())
+            if (DateTime.Now - lastTimerErrorTime < TimeSpan.FromSeconds(5))
             {
-                logger.WarnLog("unexpectedly disconnected");
-                if (IsAutoReconnect())
+                logger.InfoLog("waiting for 5s since last fatal error");
+                return;
+            }
+
+            try
+            {
+                if (!netLogin.IsNetAuthorized())
                 {
-                    logger.InfoLog("try auto-reconnecting");
-                    LoginWithUserInput();
+                    lastTimerErrorTime = DateTime.Now;
+                    
+                    logger.WarnLog("unexpectedly disconnected");
+                    if (IsAutoReconnect())
+                    {
+                        logger.InfoLog("try auto-reconnecting");
+                        LoginWithUserInput();
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                logger.FatalLog(ex.Message);
+                lastTimerErrorTime = DateTime.Now;
             }
         }
 
@@ -287,12 +346,23 @@ namespace YSUNetLogin
 
             if (freqTime >= 0.5 && freqTime <= 3600 * 24)
             {
-                timerCheck.Interval = Convert.ToInt32(freqTime * 1000);
+                timerCheck.Interval = (int)TimeSpan.FromSeconds(freqTime).TotalMilliseconds;
+                timerCheck.Stop(); timerCheck.Start();
             }
             else
             {
                 logger.ErrorLog("check interval must be in [0.5s, 24hr]");
             }
+
+        }
+
+        private void textBoxHttpTimeout_TextChanged(object sender, EventArgs e)
+        {
+            double timesp = Convert.ToDouble(textBoxHttpTimeout.Text);
+            if (timesp >= 0.01) ;
+            else timesp = 0.01;
+
+            CommonUtils.HttpClientTimeout = TimeSpan.FromSeconds(timesp);
         }
     }
 }

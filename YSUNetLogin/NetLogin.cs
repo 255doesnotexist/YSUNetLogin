@@ -37,15 +37,16 @@ namespace YSUNetLogin
 
         public bool IsNetAuthorized()
         {
-            bool res = CommonUtils.HttpGet("http://auth.ysu.edu.cn", headerStrings).IndexOf("您已成功连接") != -1;
-            if(res)
+            try
             {
-                isLogined = true;
+                string ret = CommonUtils.HttpGet("http://auth.ysu.edu.cn", headerStrings);
+                isLogined = ret.IndexOf("您已成功连接") != -1;
             }
-            else
+            catch (Exception ex)
             {
-                isLogined = false;
+                throw new Exception("cannot connect to auth server");
             }
+
             return isLogined;
         }
 
@@ -61,8 +62,19 @@ namespace YSUNetLogin
                 "userIndex", userIndex
             };
 
-            string res = CommonUtils.HttpPost("http://auth.ysu.edu.cn/eportal/InterFace.do?method=getOnlineUserInfo",
-                headerStrings, dataStrings);
+            string res = null;
+
+            try
+            {
+                res = CommonUtils.HttpPost(
+                    "http://auth.ysu.edu.cn/eportal/InterFace.do?method=getOnlineUserInfo",
+                    headerStrings, dataStrings);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("cannot connect to auth server");
+            }
+
             try
             { // userId: 账号、userName: 姓名、password: 密码
                 alldata = JObject.Parse(res);
@@ -73,7 +85,7 @@ namespace YSUNetLogin
             }
             catch (Exception ex)
             {
-                throw new Exception("连接失败。\n" + ex.ToString());
+                throw new Exception("json data format error\n" + ex.Message);
             }
         }
         public async Task<JObject> GetUserDataAsync()
@@ -153,10 +165,30 @@ namespace YSUNetLogin
             if (!IsNetAuthorized())
             {
                 if (user == "" || password == "") return (false, "username or password is empty");
-                string res = CommonUtils.HttpGet("http://auth.ysu.edu.cn", headerStrings);
-                string queryString = Regex.Matches(res, "href='https://auth.ysu.edu.cn:8443/eportal/index.jsp?.*?\\?(.*?)'", RegexOptions.IgnoreCase)[0].Value;
 
-                queryString = queryString.Substring(queryString.IndexOf("wlanacname"));
+                string res = null;
+
+                try
+                {
+                    res = CommonUtils.HttpGet("http://auth.ysu.edu.cn", headerStrings);
+                }
+                catch (Exception ex)
+                {
+                    return (false, "cannot connect to auth server");
+                }
+
+                string queryString = null;
+
+                try
+                {
+                    queryString = Regex.Matches(res, "href='https://auth.ysu.edu.cn:8443/eportal/index.jsp?.*?\\?(.*?)'", RegexOptions.IgnoreCase)[0].Value;
+
+                    queryString = queryString.Substring(queryString.IndexOf("wlanacname"));
+                }
+                catch (Exception ex)
+                {
+                    return (false, "cannot found wlanacname parameters in json data");
+                }
 
                 string[] dataStrings = new[]
                 {
@@ -170,9 +202,20 @@ namespace YSUNetLogin
                     "queryString", URLEncode.UrlEncode(queryString, Encoding.UTF8)
                 };
 
-                res = CommonUtils.HttpPost(url + "login", headerStrings, dataStrings);
-                JObject jb = JObject.Parse(res);
-                
+
+                JObject jb = null;
+                try
+                {
+                    res = CommonUtils.HttpPost(url + "login", headerStrings, dataStrings);
+                    jb = JObject.Parse(res);
+
+                    if (jb == null) throw new Exception("json data = null");
+                }
+                catch (Exception ex)
+                {
+                    return (false, "cannot connect to auth server or json data format error");
+                }
+
                 userIndex = jb.SelectToken("userIndex").ToObject<string>();
                 info = jb.SelectToken("message").ToObject<string>();
                 if (jb.SelectToken("result").ToObject<string>() == "success")
@@ -202,9 +245,18 @@ namespace YSUNetLogin
                 GetUserData();
             }
 
-            string res = CommonUtils.HttpGet(url + "logout", headerStrings);
-            JObject jb = JObject.Parse(res);
-            info = jb.SelectToken("message").ToObject<string>();
+            JObject jb = null;
+
+            try
+            {
+                string res = CommonUtils.HttpGet(url + "logout", headerStrings);
+                jb = JObject.Parse(res);
+                info = jb.SelectToken("message").ToObject<string>();
+            }
+            catch (Exception ex)
+            {
+                return (false, "cannot connect to auth server or json data format error");
+            }
 
             if (jb.SelectToken("result").ToObject<string>() == "success")
             {
