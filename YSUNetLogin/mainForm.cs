@@ -73,6 +73,29 @@ namespace YSUNetLogin
         private void mainForm_Load(object sender, EventArgs e)
         {
             JObject jb = new JObject();
+
+            try
+            {
+                autoReconnectToolStripMenuItem.Checked =
+                    jb.SelectToken("autoReconnect").ToObject<bool>();
+            }
+            catch (Exception ex)
+            {
+                autoReconnectToolStripMenuItem.Checked = false;
+            }
+
+            try
+            {
+                textBoxHttpTimeout.Text =
+                    jb.SelectToken("httpTimeout").ToObject<string>();
+                SetHttpClientTimeout(jb.SelectToken("httpTimeout").ToObject<double>());
+            }
+            catch (Exception ex)
+            {
+                textBoxHttpTimeout.Text = "3";
+                SetHttpClientTimeout(3);
+            }
+
             try
             {
                 StreamReader sr = new StreamReader("config.json");
@@ -85,11 +108,18 @@ namespace YSUNetLogin
             }
             catch (Exception ex)
             {
-                // 无配置
-                if (netLogin.IsNetAuthorized())
+                try
                 {
-                    textBoxUsername.Text = netLogin.GetUserId();
-                    textBoxPassword.Text = netLogin.GetPassword();
+                    // 无配置
+                    if (netLogin.IsNetAuthorized())
+                    {
+                        textBoxUsername.Text = netLogin.GetUserId();
+                        textBoxPassword.Text = netLogin.GetPassword();
+                    }
+                }
+                catch (Exception ex2)
+                {
+                    logger.ErrorLog("information auto-filling failed");
                 }
             }
 
@@ -101,28 +131,6 @@ namespace YSUNetLogin
             catch (Exception ex)
             {
                 timerCheck.Interval = 15000;
-            }
-
-            try
-            {
-                autoReconnectToolStripMenuItem.Checked =
-                    jb.SelectToken("autoReconnect").ToObject<bool>();
-            }
-            catch (Exception ex)
-            {
-                autoReconnectToolStripMenuItem.Checked = false;
-            }
-            
-            try
-            {
-                textBoxHttpTimeout.Text =
-                    jb.SelectToken("httpTimeout").ToObject<string>();
-                SetHttpClientTimeout(jb.SelectToken("httpTimeout").ToObject<double>());
-            }
-            catch (Exception ex)
-            {
-                textBoxHttpTimeout.Text = "3";
-                SetHttpClientTimeout(3);
             }
 
             SetLoginType(loginType);
@@ -140,10 +148,8 @@ namespace YSUNetLogin
 
             if (needRelogin)
             {
-                string un = await netLogin.GetUserIdAsync();
-                string pw = await netLogin.GetPasswordAsync();
-                netLogin.Logout();
-                LoginWithArgs(un,pw,loginType);
+                this.buttonLogout_Click(null, null);
+                this.buttonLogin_Click(null, null);
             }
 
             cERNETCToolStripMenuItem.Checked = false;
@@ -195,6 +201,7 @@ namespace YSUNetLogin
             SetLoginType(3);
         }
 
+        private bool GUILogined = false;
         private async void LoginLogoutButtonSet()
         {
             this.Cursor = Cursors.WaitCursor;
@@ -205,11 +212,15 @@ namespace YSUNetLogin
                 {
                     buttonLogin.Enabled = false;
                     buttonLogout.Enabled = true;
+
+                    GUILogined = true;
                 }
                 else
                 {
                     buttonLogin.Enabled = true;
                     buttonLogout.Enabled = false;
+
+                    GUILogined = false;
                 }
             }
             catch (Exception ex)
@@ -320,7 +331,7 @@ namespace YSUNetLogin
         private DateTime lastTimerErrorTime = DateTime.MinValue;
         private void timerCheck_Tick(object sender, EventArgs e)
         {
-            if (DateTime.Now - lastTimerErrorTime < TimeSpan.FromSeconds(5))
+            if (DateTime.Now - lastTimerErrorTime < TimeSpan.FromSeconds(1))
             {
                 return;
             }
@@ -329,10 +340,11 @@ namespace YSUNetLogin
             {
                 if (!netLogin.IsNetAuthorized())
                 {
-                    lastTimerErrorTime = DateTime.Now;
-                    
-                    logger.WarnLog("unexpectedly disconnected");
-                    LoginLogoutButtonSet();
+                    if (GUILogined)
+                    {
+                        logger.WarnLog("unexpectedly disconnected");
+                        LoginLogoutButtonSet();
+                    }
 
                     if (IsAutoReconnectEnabled())
                     {
@@ -346,7 +358,7 @@ namespace YSUNetLogin
             {
                 logger.FatalLog(ex.Message);
                 lastTimerErrorTime = DateTime.Now;
-                logger.InfoLog("waiting for 5s since last fatal error");
+                logger.InfoLog("waiting for 1s since last fatal error");
             }
         }
 
