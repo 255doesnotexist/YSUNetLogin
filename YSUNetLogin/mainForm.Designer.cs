@@ -78,7 +78,7 @@
             this.aboutAToolStripMenuItem});
             this.menuStripMain.Location = new System.Drawing.Point(0, 0);
             this.menuStripMain.Name = "menuStripMain";
-            this.menuStripMain.Size = new System.Drawing.Size(963, 42);
+            this.menuStripMain.Size = new System.Drawing.Size(963, 39);
             this.menuStripMain.TabIndex = 0;
             this.menuStripMain.Text = "menuStrip1";
             // 
@@ -195,10 +195,10 @@
             this.tabControlMain.Controls.Add(this.tabPageLogin);
             this.tabControlMain.Controls.Add(this.tabPageSettings);
             this.tabControlMain.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControlMain.Location = new System.Drawing.Point(0, 42);
+            this.tabControlMain.Location = new System.Drawing.Point(0, 39);
             this.tabControlMain.Name = "tabControlMain";
             this.tabControlMain.SelectedIndex = 0;
-            this.tabControlMain.Size = new System.Drawing.Size(963, 284);
+            this.tabControlMain.Size = new System.Drawing.Size(963, 287);
             this.tabControlMain.TabIndex = 1;
             // 
             // tabPageLogin
@@ -207,7 +207,7 @@
             this.tabPageLogin.Location = new System.Drawing.Point(8, 39);
             this.tabPageLogin.Name = "tabPageLogin";
             this.tabPageLogin.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageLogin.Size = new System.Drawing.Size(947, 237);
+            this.tabPageLogin.Size = new System.Drawing.Size(947, 240);
             this.tabPageLogin.TabIndex = 0;
             this.tabPageLogin.Text = "Login";
             this.tabPageLogin.UseVisualStyleBackColor = true;
@@ -234,7 +234,7 @@
             this.tableLayoutPanelLogin.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
             this.tableLayoutPanelLogin.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 80F));
             this.tableLayoutPanelLogin.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanelLogin.Size = new System.Drawing.Size(941, 231);
+            this.tableLayoutPanelLogin.Size = new System.Drawing.Size(941, 234);
             this.tableLayoutPanelLogin.TabIndex = 0;
             // 
             // labelUsername
@@ -296,7 +296,7 @@
             this.listBoxMessage.Location = new System.Drawing.Point(451, 3);
             this.listBoxMessage.Name = "listBoxMessage";
             this.tableLayoutPanelLogin.SetRowSpan(this.listBoxMessage, 4);
-            this.listBoxMessage.Size = new System.Drawing.Size(487, 225);
+            this.listBoxMessage.Size = new System.Drawing.Size(487, 228);
             this.listBoxMessage.TabIndex = 5;
             // 
             // buttonLogout

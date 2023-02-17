@@ -76,6 +76,17 @@ namespace YSUNetLogin
 
             try
             {
+                StreamReader sr = new StreamReader("config.json");
+                jb = JObject.Parse(sr.ReadToEnd());
+                sr.Close();
+            }
+            catch(Exception ex)
+            {
+                logger.InfoLog("config not found, loading default configs");
+            }
+
+            try
+            {
                 autoReconnectToolStripMenuItem.Checked =
                     jb.SelectToken("autoReconnect").ToObject<bool>();
             }
@@ -98,10 +109,6 @@ namespace YSUNetLogin
 
             try
             {
-                StreamReader sr = new StreamReader("config.json");
-                jb = JObject.Parse(sr.ReadToEnd());
-                sr.Close();
-
                 textBoxUsername.Text = jb.SelectToken("username").ToObject<string>();
                 textBoxPassword.Text = jb.SelectToken("password").ToObject<string>();
                 loginType = jb.SelectToken("loginType").ToObject<int>();
