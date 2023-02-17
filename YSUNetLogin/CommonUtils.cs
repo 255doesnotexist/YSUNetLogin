@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +14,11 @@ namespace YSUNetLogin
         public static TimeSpan HttpClientTimeout;
         public static string HttpGet(string url, string[] headers)
         {
-            HttpClient httpClient = new HttpClient();
+            var httpClientHandler = new HttpClientHandler();
+            httpClientHandler.Proxy = null;
+            httpClientHandler.UseProxy = false;
+
+            HttpClient httpClient = new HttpClient(httpClientHandler);
             httpClient.Timeout = HttpClientTimeout;
 
             for (int i = 0; i < headers.Length; i += 2)
@@ -27,7 +32,11 @@ namespace YSUNetLogin
         }
         public static string HttpPost(string url, string[] headers, string[] data)
         {
-            HttpClient httpClient = new HttpClient();
+            var httpClientHandler = new HttpClientHandler();
+            httpClientHandler.Proxy = null;
+            httpClientHandler.UseProxy = false;
+
+            HttpClient httpClient = new HttpClient(httpClientHandler);
             httpClient.Timeout = HttpClientTimeout;
 
             for (int i = 0; i < headers.Length; i += 2)
