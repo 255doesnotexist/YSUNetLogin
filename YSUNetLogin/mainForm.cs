@@ -35,6 +35,8 @@ namespace YSUNetLogin
 
         private async void LoginWithArgs(string un, string pw, int tp)
         {
+            this.Cursor = Cursors.WaitCursor;
+
             try
             {
                 var res = await netLogin.LoginAsync(un, pw, tp);
@@ -55,6 +57,8 @@ namespace YSUNetLogin
             {
                 logger.FatalLog(ex.Message);
             }
+
+            this.Cursor = Cursors.Default;
         }
         private void LoginWithUserInput()
         {
@@ -91,7 +95,6 @@ namespace YSUNetLogin
 
             try
             {
-                textBoxCheckInterval.Text = int.MinValue.ToString();
                 textBoxCheckInterval.Text =
                     Convert.ToString(jb.SelectToken("checkInterval").ToObject<double>());
             }
@@ -109,16 +112,17 @@ namespace YSUNetLogin
             {
                 autoReconnectToolStripMenuItem.Checked = false;
             }
-
+            
             try
             {
-                CommonUtils.HttpClientTimeout =
-                    TimeSpan.FromSeconds(jb.SelectToken("httpTimeout").ToObject<double>());
+                textBoxHttpTimeout.Text =
+                    jb.SelectToken("httpTimeout").ToObject<string>();
+                SetHttpClientTimeout(jb.SelectToken("httpTimeout").ToObject<double>());
             }
             catch (Exception ex)
             {
-                CommonUtils.HttpClientTimeout =
-                    TimeSpan.FromSeconds(Convert.ToDouble(textBoxHttpTimeout.Text));
+                textBoxHttpTimeout.Text = "3";
+                SetHttpClientTimeout(3);
             }
 
             SetLoginType(loginType);
@@ -193,6 +197,8 @@ namespace YSUNetLogin
 
         private async void LoginLogoutButtonSet()
         {
+            this.Cursor = Cursors.WaitCursor;
+
             try
             {
                 if (await netLogin.IsNetAuthorizedAsync())
@@ -210,6 +216,8 @@ namespace YSUNetLogin
             {
                 logger.FatalLog(ex.Message);
             }
+            
+            this.Cursor = Cursors.Default;
         }
 
         private async void buttonLogout_Click(object sender, EventArgs e)
@@ -291,8 +299,8 @@ namespace YSUNetLogin
             jb.Add("password", textBoxPassword.Text);
             jb.Add("loginType", loginType);
             jb.Add("checkInterval", textBoxCheckInterval.Text);
-            jb.Add("autoReconnect", IsAutoReconnect());
-            jb.Add("httpTimeout", CommonUtils.HttpClientTimeout);
+            jb.Add("autoReconnect", IsAutoReconnectEnabled());
+            jb.Add("httpTimeout", textBoxHttpTimeout.Text);
 
             StreamWriter sw = new StreamWriter("config.json");
             sw.WriteLine(jb.ToString());
@@ -304,7 +312,7 @@ namespace YSUNetLogin
             autoReconnectToolStripMenuItem.Checked = !autoReconnectToolStripMenuItem.Checked;
         }
 
-        private bool IsAutoReconnect()
+        private bool IsAutoReconnectEnabled()
         {
             return autoReconnectToolStripMenuItem.Checked;
         }
@@ -314,7 +322,6 @@ namespace YSUNetLogin
         {
             if (DateTime.Now - lastTimerErrorTime < TimeSpan.FromSeconds(5))
             {
-                logger.InfoLog("waiting for 5s since last fatal error");
                 return;
             }
 
@@ -325,17 +332,21 @@ namespace YSUNetLogin
                     lastTimerErrorTime = DateTime.Now;
                     
                     logger.WarnLog("unexpectedly disconnected");
-                    if (IsAutoReconnect())
+                    LoginLogoutButtonSet();
+
+                    if (IsAutoReconnectEnabled())
                     {
                         logger.InfoLog("try auto-reconnecting");
                         LoginWithUserInput();
                     }
+                    
                 }
             }
             catch (Exception ex)
             {
                 logger.FatalLog(ex.Message);
                 lastTimerErrorTime = DateTime.Now;
+                logger.InfoLog("waiting for 5s since last fatal error");
             }
         }
 
@@ -356,13 +367,15 @@ namespace YSUNetLogin
 
         }
 
+        private void SetHttpClientTimeout(double timesp)
+        {
+            CommonUtils.HttpClientTimeout = TimeSpan.FromSeconds(timesp);
+        }
         private void textBoxHttpTimeout_TextChanged(object sender, EventArgs e)
         {
-            double timesp = Convert.ToDouble(textBoxHttpTimeout.Text);
-            if (timesp >= 0.01) ;
-            else timesp = 0.01;
-
-            CommonUtils.HttpClientTimeout = TimeSpan.FromSeconds(timesp);
+            double timesp;
+            double.TryParse(textBoxHttpTimeout.Text, out timesp);
+            SetHttpClientTimeout(timesp);
         }
     }
 }
